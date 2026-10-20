@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f7931a"><link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="sats 가계부"><meta name="description" content="비트코인 sats 단위 수기 가계부"><title>sats 가계부</title><link rel="stylesheet" href="style.css"></head>
+<body>
+<header><h1>⚡ sats 가계부</h1>
+<div id="price" class="price"><span id="pKrw">시세 불러오는 중…</span><span id="pUsd"></span><small id="pMeta"></small></div></header>
+<main>
+<div id="monthbar" class="monthbar"><button type="button" id="prev" class="nav" aria-label="이전 달">◀</button><input type="month" id="month" aria-label="월 선택"><button type="button" id="next" class="nav" aria-label="다음 달">▶</button><button type="button" id="todayBtn" class="ghost">오늘</button></div>
+
+<!-- 가계부 탭 -->
+<section id="tab-book" class="tab">
+ <section class="cards">
+  <div class="card"><div class="lbl">총 잔액 (전체 자산)</div><div class="big" id="balSats">0 sats</div><div class="sub" id="balKrw">≈ ₩0</div></div>
+  <div class="card"><div class="lbl">이 달 수입</div><div class="big inc" id="mInc">0 sats</div><div class="sub" id="mIncK"></div></div>
+  <div class="card"><div class="lbl">이 달 지출</div><div class="big exp" id="mExp">0 sats</div><div class="sub" id="mExpK"></div></div>
+ </section>
+ <nav class="subtabs"><button type="button" data-view="daily">일일</button><button type="button" data-view="calendar">달력</button><button type="button" data-view="weekly">주간</button><button type="button" data-view="monthly">월별</button></nav>
+ <div id="v-daily">
+  <section class="panel"><div class="row"><h2>기록</h2><select id="listMonth" aria-label="목록 월"></select><button id="csv" type="button">CSV 내보내기</button></div>
+   <input type="search" id="search" placeholder="🔍 검색 (메모·카테고리·자산·금액)">
+   <div id="list"></div></section>
+  <section class="panel"><h2>일별 (선택 월)</h2><div id="daily"></div></section>
+ </div>
+ <div id="v-calendar" hidden><section class="panel"><div id="cal"></div></section><section class="panel"><div id="dayList"></div></section></div>
+ <div id="v-weekly" hidden><section class="panel"><h2>주간 (선택 월)</h2><div id="weekly"></div></section></div>
+ <div id="v-monthly" hidden><section class="panel"><h2 id="yearTitle">연간 월별</h2><div id="monthly"></div></section></div>
+</section>
+
+<!-- 통계 탭 -->
+<section id="tab-stats" class="tab" hidden>
+ <section class="panel"><div class="row"><h2>카테고리 통계</h2><div class="seg small" id="statSeg"><button type="button" data-st="expense">지출</button><button type="button" data-st="income">수입</button></div></div>
+  <div class="donutWrap"><svg id="donut" viewBox="0 0 42 42"></svg><div id="cats-break"></div></div></section>
+ <section class="panel"><div class="row"><h2>예산 (선택 월)</h2><button type="button" class="ghost" data-goto="settings">예산 설정</button></div><div id="budgetProg"></div></section>
+</section>
+
+<!-- 자산 탭 -->
+<section id="tab-assets" class="tab" hidden>
+ <section class="panel"><div class="row"><h2>자산</h2><button type="button" id="trfBtn">⇄ 이체</button></div><div id="assets"></div></section>
+ <section class="panel"><h2>자산 추가</h2><div class="inline">
+  <input id="accName" placeholder="이름 (예: 라이트닝 지갑)"><select id="accGroup"><option>핫월렛</option><option>라이트닝</option><option>거래소</option><option>콜드월렛</option><option>기타</option></select>
+  <input id="accInit" type="number" min="0" step="1" placeholder="초기 잔액 sats"><button type="button" id="accAdd">추가</button></div></section>
+</section>
+
+<!-- 설정 탭 -->
+<section id="tab-settings" class="tab" hidden>
+ <section class="panel"><div class="row"><h2>카테고리 관리</h2><div class="seg small" id="catSeg"><button type="button" data-ct="expense">지출</button><button type="button" data-ct="income">수입</button></div></div>
+  <div id="catMgr"></div><div class="inline"><input id="newCat" placeholder="새 카테고리 이름"><button type="button" id="addCat">추가</button></div></section>
+ <section class="panel"><h2>월 예산 (지출 카테고리별, sats)</h2><p class="sub">0 또는 빈칸이면 예산 없음. 매월 같은 예산이 적용됩니다.</p><div id="budgetEdit"></div></section>
+ <section class="panel"><h2>데이터</h2><div class="inline">
+  <button type="button" id="csv2">CSV 내보내기</button><label class="filebtn">CSV 가져오기<input type="file" id="csvIn" accept=".csv,text/csv" hidden></label>
+  <button type="button" id="jsonOut" class="ghost">전체 백업 (JSON)</button><label class="filebtn ghost">백업 복원<input type="file" id="jsonIn" accept=".json,application/json" hidden></label></div>
+  <p class="sub">CSV 가져오기는 기존 기록에 추가하며 동일한 기록은 건너뜁니다. 백업 복원은 현재 데이터를 대체합니다.</p></section>
+</section>
+</main>
+<footer>데이터는 이 브라우저(localStorage)에만 저장됩니다. 개인키·지갑 연결 없음 — 모두 수기 입력.</footer>
+
+<button type="button" id="fab" aria-label="빠른 입력">＋</button>
+<nav class="bottom"><button type="button" data-tab="book">📒<span>가계부</span></button><button type="button" data-tab="stats">📊<span>통계</span></button><button type="button" data-tab="assets">💼<span>자산</span></button><button type="button" data-tab="settings">⚙️<span>설정</span></button></nav>
+
+<dialog id="modal"><form id="form" novalidate>
+ <h2 id="formTitle">기록 추가</h2><input type="hidden" id="editId"><input type="hidden" id="type" value="expense">
+ <div class="seg wide" id="typeSeg"><button type="button" data-t="income">수입</button><button type="button" data-t="expense">지출</button><button type="button" data-t="transfer">이체</button></div>
+ <label>날짜<input type="date" id="date"></label>
+ <label>금액 (sats)<input type="number" id="amount" min="1" step="1" inputmode="numeric" placeholder="예: 21000"></label>
+ <label id="accL">자산<select id="account"></select></label>
+ <label id="toL" hidden>받는 자산<select id="to"></select></label>
+ <label id="catL">카테고리<select id="category"></select></label>
+ <label id="subL">하위 카테고리<select id="sub"></select></label>
+ <label class="wide">메모<input id="memo" placeholder="메모 (선택)"></label>
+ <div class="wide sub" id="preview"></div>
+ <div class="wide btns"><button type="submit" id="submitBtn">저장</button><button type="button" id="copyBtn" class="ghost" hidden>복사해서 새로</button><button type="button" id="delBtn" class="danger" hidden>삭제</button><button type="button" id="cancelEdit" class="ghost">취소</button></div>
+</form></dialog>
+<script src="app.js"></script></body></html>

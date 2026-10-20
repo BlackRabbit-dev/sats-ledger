@@ -1,0 +1,2 @@
+{"name":"sats 가계부","short_name":"sats 가계부","description":"비트코인 sats 단위 수기 가계부 (실시간 원화 환산)","lang":"ko","id":"./","start_url":"./index.html","scope":"./","display":"standalone","orientation":"portrait","background_color":"#0f1115","theme_color":"#f7931a",
+"icons":[{"src":"icons/icon-192.png","sizes":"192x192","type":"image/png","purpose":"any"},{"src":"icons/icon-512.png","sizes":"512x512","type":"image/png","purpose":"any"},{"src":"icons/maskable-512.png","sizes":"512x512","type":"image/png","purpose":"maskable"}]}
